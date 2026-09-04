@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+@theme {
+  /*
+   * Sampled from their own certification seal: a bright document white,
+   * near-black ink, and the badge's own saturated red — the same three
+   * colours as the red-on-white shop sign itself. No accent was invented.
+   */
+  --color-ground: #f4f3f0; /* document white */
+  --color-ground-2: #eceae5; /* raised card */
+  --color-ground-3: #ddd9d2; /* rules only — never text */
+  --color-ink: #1b1a19; /* 15.7:1 on ground */
+  --color-ink-2: #5a5855; /* 6.4:1 on ground */
+  /* Their badge's own red, 5.6:1 on ground. On this page red never means
+     "act" — every button is ink. Red marks *presentation*: the seal, the
+     scanning bar, the line naming how a listing was published, and the tag on
+     a figure that only the poster artwork carries. */
+  --color-red: #c21414;
+
+  --font-display: var(--font-eb-garamond), Georgia, serif;
+  --font-body: var(--font-nunito-sans), system-ui, sans-serif;
+  --font-arabic-display: var(--font-lateef), "Segoe UI", sans-serif;
+  --font-arabic-body: var(--font-readex-pro), system-ui, sans-serif;
+
+  --text-hero: clamp(2rem, 4.6vw, 3.7rem);
+  --text-display: clamp(1.45rem, 2.8vw, 2.2rem);
+  --text-lead: clamp(0.98rem, 1.1vw, 1.12rem);
+
+  /* A fingerprint isn't read at a glance — it's scanned, a line passing
+     once and confirming what's underneath. */
+  --ease-scan: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@layer base {
+  section[id] { scroll-margin-top: 5.5rem; }
+
+  html {
+    background: var(--color-ground);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: auto;
+  }
+
+  body { font-family: var(--font-body); overflow-x: hidden; }
+  html[dir="rtl"] body { font-family: var(--font-arabic-body); }
+
+  ::selection { background: var(--color-red); color: var(--color-ground); }
+  :focus-visible { outline: 2px solid var(--color-red); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility font-display { font-family: var(--font-display); }
+html[dir="rtl"] .font-display { font-family: var(--font-arabic-display); }
+
+@utility label {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--color-ink-2);
+}
+html[dir="rtl"] .label {
+  font-family: var(--font-arabic-body);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.86rem;
+}
+
+/* The Arabic body face, used for a verbatim Arabic caption quoted inside the
+   English page as well as inside the Arabic one. */
+@utility arabic { font-family: var(--font-arabic-body); }
+
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion signature: the scan.
+ *
+ * Content is revealed by a hard clip travelling up, with a bright bar
+ * riding the reveal edge — the way a scanner confirms a surface, not a
+ * fade or a slide. Clip the inner wrapper, observe the outer one, or the
+ * IntersectionObserver's rect collapses to zero and the reveal never fires.
+ * ------------------------------------------------------------------------ */
+
+@keyframes scan-reveal {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0% 0); }
+}
+@keyframes scan-bar-travel {
+  0% { top: 0%; opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes scan-reveal { from { clip-path: none; } to { clip-path: none; } }
+  @keyframes scan-bar-travel { from { opacity: 0; } to { opacity: 0; } }
+}
+
+[data-scan] { position: relative; }
+[data-scan] > [data-scan-inner] {
+  clip-path: inset(0 0 100% 0);
+}
+[data-scan][data-seen] > [data-scan-inner] {
+  animation: scan-reveal 620ms var(--ease-scan) var(--scan-delay, 0ms) both;
+}
+[data-scan] > [data-scan-bar] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: var(--color-red);
+  box-shadow: 0 0 8px 1px color-mix(in srgb, var(--color-red) 60%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+[data-scan][data-seen] > [data-scan-bar] {
+  animation: scan-bar-travel 620ms var(--ease-scan) var(--scan-delay, 0ms) both;
+}
+
+/* ---------------------------------------------------------------------------
+ * Arabic corrections. Keyed off [dir], never [lang] — browser translation
+ * rewrites lang. Unlayered so they outrank Tailwind utilities.
+ * ------------------------------------------------------------------------ */
+
+html[dir="ltr"] .text-hero { line-height: 1.1; }
+html[dir="rtl"] .text-hero {
+  font-size: clamp(2.6rem, 6.2vw, 4.6rem);
+  line-height: 1.4;
+  font-weight: 700;
+}
+html[dir="ltr"] .text-display { line-height: 1.15; }
+html[dir="rtl"] .text-display {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+html[dir="rtl"] [class*="tracking-["],
+html[dir="rtl"] .tracking-widest,
+html[dir="rtl"] .tracking-wider { letter-spacing: 0; }
+
+.fine { font-size: 0.78rem; line-height: 1.6; }
+html[dir="rtl"] .fine { font-size: 0.9rem; line-height: 1.9; }
+
+html[dir="rtl"] .text-lead { font-size: clamp(1.02rem, 1.15vw, 1.16rem); line-height: 1.95; }
+
+/* A verbatim caption is a right-aligned block whatever the page locale, but
+   its lines are a mix — a Latin model name, Arabic spec lines, a hashtag row
+   carrying both. `plaintext` gives each line its own direction from its own
+   first strong character, while the physical `text-align` keeps the block
+   ragged-left against a single right edge. */
+.quote-line {
+  display: block;
+  unicode-bidi: plaintext;
+  text-align: right;
+}
+
+/* A value whose script varies with the locale — a phone number, a sign's own
+   wordmark, a spec figure — needs its *own* direction resolved from its
+   content, but its *alignment* taken from the page. `dir="auto"` alone gets
+   the first half right and the second wrong: a digits-only string resolves
+   LTR, and `text-align: start` then strands it against the left edge of an
+   otherwise right-aligned Arabic column. */
+.bidi { unicode-bidi: plaintext; }
+html[dir="rtl"] .bidi { text-align: right; }
+html[dir="ltr"] .bidi { text-align: left; }
+
+/* Marque names, model codes, figures and phone numbers stay Latin and LTR
+   inside Arabic copy. dir="ltr" isolates direction only, with no font or
+   alignment side effect. */
+.latin {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+html[dir="rtl"] .latin { text-align: right; }

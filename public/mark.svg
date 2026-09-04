@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Trust Motors">
+  <!-- Their real badge: a red rim, a black ring carrying the wordmark, a red
+       inner rim and a white disc with a solid red T. Redrawn from the seal in
+       the corner of their own Suzuki Ciaz poster. -->
+  <circle cx="50" cy="50" r="49" fill="#c21414" />
+  <circle cx="50" cy="50" r="46" fill="#1b1a19" />
+  <circle cx="50" cy="50" r="33.5" fill="#c21414" />
+  <circle cx="50" cy="50" r="31" fill="#f4f3f0" />
+  <path d="M21.6 33.8H78.4V58.6H63.5V79.8H36.5V58.6H21.6Z" fill="#c21414" />
+</svg>
