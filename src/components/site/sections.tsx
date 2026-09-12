@@ -615,7 +615,6 @@ export function Footer() {
             {c.brand.name}
           </span>
         </div>
-        <p className="fine max-w-[56ch] text-ink-2">{c.footer.disclaimer}</p>
         <p className="fine shrink-0 text-ink-2">{c.footer.rights}</p>
       </div>
     </footer>

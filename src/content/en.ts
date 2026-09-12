@@ -146,9 +146,7 @@ export const en: TrustContent = {
   },
 
   footer: {
-    disclaimer:
-      "A concept design, built as a demonstration. Not an official Trust Motors site and not affiliated with them. All photography, marks and quoted copy belong to Trust Motors; captions are reproduced exactly as published, and two bystanders' faces have been blurred.",
-    rights: "Concept by Claude",
+    rights: "© Trust Motors. All rights reserved.",
   },
 
   a11y: {

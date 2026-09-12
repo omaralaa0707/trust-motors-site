@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { EB_Garamond, Nunito_Sans, Lateef, Readex_Pro } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/i18n/locale-provider";
-import { ScrollProvider } from "@/components/motion/scroll-provider";
 import { ar } from "@/content/ar";
 import { en } from "@/content/en";
 
@@ -62,7 +61,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <style>{`[data-scan-inner]{clip-path:none!important;animation:none!important}[data-scan-bar]{display:none!important}`}</style>
         </noscript>
         <LocaleProvider dictionaries={{ ar, en }} defaultLocale="en">
-          <ScrollProvider />
           {children}
         </LocaleProvider>
       </body>
